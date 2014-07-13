@@ -1,3 +1,3 @@
 jutils
 ======
-A collection of java utilities developed while at school.
+A collection of Java utilities developed while at school.
