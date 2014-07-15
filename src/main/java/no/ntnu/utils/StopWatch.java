@@ -6,13 +6,6 @@ import java.util.SortedMap;
 import static java.lang.System.currentTimeMillis;
 import static no.ntnu.utils.Col.treeMap;
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: 2/7/12
- * Time: 9:33 AM
- * To change this template use File | Settings | File Templates.
- */
 public class StopWatch {
 
     private long started;
@@ -29,21 +22,21 @@ public class StopWatch {
             start();
     }
 
-    private long getLast(){
-        if(laps.size()==0)
+    private long getLast() {
+        if (laps.size() == 0)
             return started;
         return laps.lastKey();
     }
 
     public long lapDiff() {
         long start = getLast();
-        long stop= lap().getLast();
-        return stop-start;
+        long stop = lap().getLast();
+        return stop - start;
     }
 
     public StopWatch lapPrintSec(String msg) {
-        float duration = (float)lapDiff();
-        float diffSec = duration/1000.0f;
+        float duration = (float) lapDiff();
+        float diffSec = duration / 1000.0f;
         System.out.println(StringUtils.cat(String.valueOf(msg), " \t", df.format(diffSec), " sec."));
         return this;
     }
@@ -55,6 +48,7 @@ public class StopWatch {
         System.out.println(StringUtils.cat("[", msg, String.valueOf(stop - start), " ms. ] "));
         return this;
     }
+
     public StopWatch lap(String msg) {
         laps.put(currentTimeMillis(), msg);
         return this;
@@ -67,6 +61,7 @@ public class StopWatch {
     public StopWatch restart() {
         return reset().start();
     }
+
     public StopWatch reset() {
         laps.clear();
         started = stopped = 0;
@@ -114,6 +109,6 @@ public class StopWatch {
 
     @Override
     public String toString() {
-        return "diff:" + diff()+" ms.";
+        return "diff:" + diff() + " ms.";
     }
 }

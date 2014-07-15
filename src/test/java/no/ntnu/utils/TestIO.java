@@ -4,15 +4,9 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static junit.framework.Assert.assertTrue;
 import static no.ntnu.utils.IO.dirsInUserHomeDir;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: 3/17/12
- * Time: 11:07 PM
- */
 public class TestIO {
 
     @Test

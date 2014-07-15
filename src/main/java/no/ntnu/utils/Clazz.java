@@ -15,34 +15,35 @@ import static java.lang.Class.forName;
  * Time: 14:08
  * $Id$
  */
-@SuppressWarnings({"unchecked","rawtypes"})
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class Clazz {
 
-    private static final Map<Class,Class> wrappers= Col.newMap();
+    private static final Map<Class, Class> wrappers = Col.newMap();
+
     static {
         wrappers.put(Boolean.class, boolean.class);
-        wrappers.put(Character.class,char.class);
-        wrappers.put(Byte.class,byte.class);
-        wrappers.put(Short.class,short.class);
-        wrappers.put(Integer.class,int.class);
-        wrappers.put(Long.class,long.class);
-        wrappers.put(Float.class,float.class);
-        wrappers.put(Double.class,double.class);
-        wrappers.put(Void.class,void.class);
+        wrappers.put(Character.class, char.class);
+        wrappers.put(Byte.class, byte.class);
+        wrappers.put(Short.class, short.class);
+        wrappers.put(Integer.class, int.class);
+        wrappers.put(Long.class, long.class);
+        wrappers.put(Float.class, float.class);
+        wrappers.put(Double.class, double.class);
+        wrappers.put(Void.class, void.class);
     }
 
-    public static Object invoke(Object src, String methodName)throws RuntimeException{
-        return invoke(src,methodName,null);
+    public static Object invoke(Object src, String methodName) throws RuntimeException {
+        return invoke(src, methodName, null);
     }
 
-    public static Object invoke(Object src, String methodName, Object... args)throws RuntimeException{
-        Class[] argsClasses = getArgsClasses(args,false);
+    public static Object invoke(Object src, String methodName, Object... args) throws RuntimeException {
+        Class[] argsClasses = getArgsClasses(args, false);
         try {
             return invokeImpl(src, methodName, argsClasses, args);
         } catch (NoSuchMethodException e) {
             //System.err.println("trying primitive wrappers...");
             try {
-                return invokeImpl(src,methodName,getArgsClasses(args,true),args);
+                return invokeImpl(src, methodName, getArgsClasses(args, true), args);
             } catch (Throwable e1) {
                 //e1.printStackTrace();
                 throw new RuntimeException(e);
@@ -64,56 +65,57 @@ public class Clazz {
             for (Method m : methods) {
                 if (m.getName().equals(methodName)) {
                     Class<?>[] params = m.getParameterTypes();
-                    for (int i = 0; i < params.length && params.length==args.length; i++) {
+                    for (int i = 0; i < params.length && params.length == args.length; i++) {
                         String paramName = params[i].getClass().getName();
                         if (paramName.equals(argsClasses[i].getClass().getName())
                                 || paramName.equals(argsClasses[i].getSuperclass())
-                                ){
+                                ) {
                             //System.out.println("Invoking "+m.getName()+" "+ Arrays.toString(m.getParameterTypes()));
-                            return m.invoke(src,args);
+                            return m.invoke(src, args);
                         }
                     }
                 }
             }
             throw e;
         }
-        return method.invoke(src,args);
+        return method.invoke(src, args);
     }
 
     private static Class[] getArgsClasses(Object[] args, boolean useWrappers) {
         Class[] argsClasses = null;
-        if(args!=null && args.length>0){
-            argsClasses=new Class[args.length];
+        if (args != null && args.length > 0) {
+            argsClasses = new Class[args.length];
             for (int i = 0; i < args.length; i++) {
-                if(useWrappers && wrappers.containsKey(args[i].getClass())) {
-                    argsClasses[i]=wrappers.get(args[i].getClass());
-                }else
-                    argsClasses[i]=args[i].getClass();
+                if (useWrappers && wrappers.containsKey(args[i].getClass())) {
+                    argsClasses[i] = wrappers.get(args[i].getClass());
+                } else
+                    argsClasses[i] = args[i].getClass();
             }
         }
         return argsClasses;
     }
 
-    public static <E> E  instance(String name,Arguments args) {
-        return instance(name,null,args);
+    public static <E> E instance(String name, Arguments args) {
+        return instance(name, null, args);
     }
 
-    public static <E> E  instantiate(String name) {
+    public static <E> E instantiate(String name) {
         return instance(name);
     }
-    public static <E> E  instance(String name) {
-        return instance(name,null,null);
+
+    public static <E> E instance(String name) {
+        return instance(name, null, null);
     }
 
-    public static <E> E  instance(String name, String defaultClass) {
+    public static <E> E instance(String name, String defaultClass) {
         return instance(name, defaultClass, null);
     }
 
-    public static <E> E  instance(String name, String defaultClass,Arguments args) {
+    public static <E> E instance(String name, String defaultClass, Arguments args) {
         try {
             if (Debug.VERBOSE) {
                 String defclassDebugStr = defaultClass != null ? ", defaulClass=".concat(defaultClass) : "";
-                D.d("name " + name + defclassDebugStr);
+                Debug.d("name " + name + defclassDebugStr);
             }
             if (name == null && defaultClass != null) return instance(defaultClass, null, args);
             final Class<E> c = (Class<E>) forName(name);
@@ -124,21 +126,21 @@ public class Clazz {
             e.printStackTrace();
             System.err.print(name + " is not available.");
             if (defaultClass != null) {
-                System.err.println(" Using default class: "+defaultClass);
-                return instance(defaultClass,null,args);
-            }else System.err.println();
+                System.err.println(" Using default class: " + defaultClass);
+                return instance(defaultClass, null, args);
+            } else System.err.println();
         }
         return null;
     }
-    
-    public static class Arguments{
-		private Class[] argsClasses;
+
+    public static class Arguments {
+        private Class[] argsClasses;
         public Object[] args;
 
-        public Arguments(Object ... args)throws NullPointerException{
-            this.args=args;
+        public Arguments(Object... args) throws NullPointerException {
+            this.args = args;
             Collection<Class<? extends Object>> c = new LinkedList<Class<? extends Object>>();
-            for(Object o: args)
+            for (Object o : args)
                 c.add(o.getClass());
             this.argsClasses = c.toArray(new Class[c.size()]);
         }

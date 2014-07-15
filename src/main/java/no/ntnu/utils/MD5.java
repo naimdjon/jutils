@@ -5,16 +5,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: 2/5/12
- * Time: 8:05 PM
- * To change this template use File | Settings | File Templates.
- */
 public class MD5 {
-    private final AtomicLong al= new AtomicLong(1);
-    private static final MD5 instance=new MD5();
+    private final AtomicLong al = new AtomicLong(1);
+    private static final MD5 instance = new MD5();
 
     public static String hash(String string) {
         try {
@@ -42,7 +35,7 @@ public class MD5 {
         return sb.toString();
     }
 
-    public static long generateID(){
+    public static long generateID() {
         /*long retval;
         synchronized (al) {
             retval=al.incrementAndGet();

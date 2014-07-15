@@ -21,34 +21,21 @@ import static no.ntnu.utils.IO.*;
 import static no.ntnu.utils.StringUtils.cat;
 
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: Oct 21, 2010
- * Time: 3:42:46 PM
- */
 public class XML {
 
-    /**
-     * Cleans this xml string (e.g. closes unclosed tags). This is mostly useful to transform not well-formed xmls to a
-     * well-formed version.<br/>
-     * This method requires htmlcleaner jar in the classpath during runtime.
-     *
-     * @param xml xml to be checked.
-     * @return the transformed xml.
-     */
-    public static String cleanWithHtmlCleaner(String xml){
+
+    public static String cleanWithHtmlCleaner(String xml) {
         Object htmlCleaner = instantiate("org.htmlcleaner.HtmlCleaner");
-        Object props= invoke(htmlCleaner, "getProperties");
-        invoke(props,"setOmitHtmlEnvelope",true);
-        invoke(props,"setOmitComments",true);
-        Object tagNode= invoke(htmlCleaner, "clean", xml);
-        ByteArrayOutputStream output= new ByteArrayOutputStream();
+        Object props = invoke(htmlCleaner, "getProperties");
+        invoke(props, "setOmitHtmlEnvelope", true);
+        invoke(props, "setOmitComments", true);
+        Object tagNode = invoke(htmlCleaner, "clean", xml);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
         Object serializer = instance("org.htmlcleaner.SimpleXmlSerializer", new Arguments(props));
-        invoke(serializer,"writeToStream",tagNode,output);
+        invoke(serializer, "writeToStream", tagNode, output);
         return output.toString();
     }
-    
+
     public static Document getSafeDoc(File file) throws RuntimeException {
         try {
             return getDoc(file);
@@ -57,6 +44,7 @@ public class XML {
             return null;
         }
     }
+
     public static Document getDoc(File file) throws RuntimeException {
         return getDoc(readFileStr(file));
     }
@@ -65,15 +53,15 @@ public class XML {
         return getDoc(readUrl(url));
     }
 
-    public static Document getDoc(String content,String childNode) throws RuntimeException {
-        String s= cat(childNode, ">");
+    public static Document getDoc(String content, String childNode) throws RuntimeException {
+        String s = cat(childNode, ">");
         //String parseContent = content.substring(content.indexOf(cat("<", s)), content.indexOf(cat("</", s)) + childNode.length() + 3);
         //if(D.VERBOSE)D.d(parseContent);
         //Document doc = getDoc(parseContent);
         //return doc;
         int start = content.indexOf(cat("<", s));
         int end = content.indexOf(cat("</", s)) + childNode.length() + 3;
-        if(min(start, end)<0)return null;
+        if (min(start, end) < 0) return null;
         return getDoc(content.substring(start, end));
     }
 
@@ -98,12 +86,12 @@ public class XML {
 
     public static String serializeNoDeclaration(String doc) throws RuntimeException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        serialize(getDoc(doc), baos,true);
+        serialize(getDoc(doc), baos, true);
         return baos.toString();
     }
 
 
-	public static Document getDocFromFile(String filename) throws XPathRuntimeException {
+    public static Document getDocFromFile(String filename) throws XPathRuntimeException {
         Document doc;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -113,14 +101,14 @@ public class XML {
             dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
             dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             DocumentBuilder db = dbf.newDocumentBuilder();
-            doc=db.parse(new InputSource(new FileReader(filename)));
+            doc = db.parse(new InputSource(new FileReader(filename)));
         } catch (Exception se) {
             se.printStackTrace();
             throw new XPathRuntimeException(se);
-       }
+        }
         return doc;
     }/*
-	public static Document getDocFromFile(String filename) throws XPathRuntimeException {
+    public static Document getDocFromFile(String filename) throws XPathRuntimeException {
         Document doc;
         try {
             DOMParser parser = new DOMParser();
@@ -138,11 +126,11 @@ public class XML {
     }*/
 
     public static void serialize(Document doc, OutputStream out) throws RuntimeException {
-        serialize(doc,out,false);
+        serialize(doc, out, false);
     }
 
     public static void main(String[] args) {
-        String s="<x><y><z/></y></x>";
+        String s = "<x><y><z/></y></x>";
         serialize(getDoc(s));
     }
 
@@ -165,20 +153,6 @@ public class XML {
             throw new RuntimeException(e);
         }
     }
-    /*public static String serialize2(Node node) throws RuntimeException {
-        try {
-            ByteArrayOutputStream output= new ByteArrayOutputStream();
-            OutputFormat format = new OutputFormat();
-            format.setIndenting(true);
-            format.setIndent(2);
-            XMLSerializer serializer = new XMLSerializer(output, format);
-            serializer.serialize(node);
-            return output.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }*/
 
     public static void serialize(Document doc, OutputStream out, boolean omitXMLDeclaration) throws RuntimeException {
         TransformerFactory tfactory = TransformerFactory.newInstance();
@@ -187,7 +161,7 @@ public class XML {
             serializer = tfactory.newTransformer();
             //Setup indenting to "pretty print"
             serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-            if(omitXMLDeclaration)
+            if (omitXMLDeclaration)
                 serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
             serializer.transform(new DOMSource(doc), new StreamResult(out));
@@ -205,7 +179,8 @@ public class XML {
     public static String removeProcessingInstrAndNS(String s) {
         return removeNameSpace(removeProcessingInstr(s));
     }
+
     public static String removeProcessingInstr(String s) {
-        return s.replaceFirst("<\\?xml[^>]*>","");
+        return s.replaceFirst("<\\?xml[^>]*>", "");
     }
 }

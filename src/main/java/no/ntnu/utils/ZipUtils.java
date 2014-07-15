@@ -1,8 +1,6 @@
 package no.ntnu.utils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.*;
@@ -10,26 +8,10 @@ import java.util.zip.*;
 
 public class ZipUtils {
     public static final int BUFFER = 2048;
-    //private static String dir_zipfiles;
-    //private static String prefixURL;
 
-    /**
-     * Size of inflate/deflate buffer. The in-/deflater will allocate more if needed,
-     * every time doubling in size. This size should be small enough to keep from allocating
-     * much more memory than needed, but large enough to keep from doubling a lot.
-     */
     private final static int BUFFER_SIZE_STRINGCOMP = 1000 * 1024; // 1Mb
 
 
-
-    /**
-     * Adds the file/directory to zip file denoted by the name of the file. The Zip file to be stored is called the parameter sent as a filename,
-     * if not sent , the default filename for zip file is provided (the filename with zip extension).
-     *
-     * @param toZip    the file/directory to be zipped
-     * @param filename the fully qualified filename (full path) to which the zip file is stored, the default is the filename with zip extension.
-     * @return the resulted zip file
-     */
     public static File zipDirectory(File toZip, String filename) throws IOException {
         if (filename != null && filename.length() > 0 && !filename.endsWith(".zip")) {
             filename = filename + ".zip";
@@ -48,14 +30,6 @@ public class ZipUtils {
     }
 
 
-    /**
-     * zips the directory given and writes out to the correct zipoutputstream.
-     *
-     * @param path
-     * @param directory
-     * @param out
-     * @throws IOException
-     */
     public static void zip(String path, File directory, ZipOutputStream out) throws IOException {
         File[] files = directory.listFiles();
         byte data[] = new byte[BUFFER];
@@ -81,10 +55,6 @@ public class ZipUtils {
     }
 
 
-    /**
-     * the method that unzips the file to the directory sent. The default directory to which it is extracted is the
-     * parent directory of the file to unzip.
-     */
     public static void unZip(File zipFile/*the zip file**/, String toDirectory/*the directory to which unzip*/) throws IOException {
         FileInputStream fis = new FileInputStream(zipFile);
         CheckedInputStream checksum = new CheckedInputStream(fis, new Adler32());
@@ -124,7 +94,7 @@ public class ZipUtils {
             try {
                 FileOutputStream fos = new FileOutputStream(f);
                 BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
-                while ((count = zis.read(data, 0,BUFFER)) != -1) {
+                while ((count = zis.read(data, 0, BUFFER)) != -1) {
                     dest.write(data, 0, count);
                 }
                 dest.flush();
@@ -146,14 +116,7 @@ public class ZipUtils {
         //log.debug("Checksum:" + checksum.getChecksum().getValue());
     }
 
-    /**
-     * Unzip one file from the zipfile.
-     *
-     * @param zipfile the zipfile
-     * @param path    filename including path of file to extract. Separators seem to be /.
-     * @return extracted file, or null if path not found or if it is a directory.
-     * @throws IOException if any I/O occurs when reading zip file
-     */
+
     public static byte[] unzip(byte[] zipfile, String path) throws IOException {
         byte[] file = null;
         CheckedInputStream checksum = new CheckedInputStream(new ByteArrayInputStream(zipfile), new Adler32());
@@ -202,7 +165,7 @@ public class ZipUtils {
         while (entry != null) {
             String name = entry.getName();
             if (pattern.matcher(name).matches() && entry.getSize() > 0) {
-                byte[] file = new byte[(int)entry.getSize()];
+                byte[] file = new byte[(int) entry.getSize()];
                 dis.readFully(file);
                 map.put(name, file);
             }
@@ -217,27 +180,13 @@ public class ZipUtils {
         return unzipFiles(zis, regex);
     }
 
-    /**
-     * Puts next entry to the zip output stream <tt>zipfile</tt>.
-     *
-     * @param data      the data to be put as a next entry
-     * @param entryPath the path of the entry, this is the name of file in the zip.
-     * @param zipfile   the zip file.
-     * @throws IOException if any IO exception occurs when trying to write to the zip stream
-     */
     public static void putNextEntry(byte[] data, String entryPath, ZipOutputStream zipfile) throws IOException {
         ZipEntry e = new ZipEntry(entryPath);
         zipfile.putNextEntry(e);
         zipfile.write(data, 0, data.length);
     }
 
-    /**
-     * Creates a zip-file based on a map of (String)path -> (byte[])data
-     *
-     * @param data
-     * @return
-     * @throws IOException
-     */
+
     public static byte[] zip(Map<String, byte[]> data) throws IOException {
         if (data == null || data.size() == 0) return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -250,80 +199,14 @@ public class ZipUtils {
         return baos.toByteArray();
     }
 
-    /**
-     * Search for subfiles. Insert null as wildcard for fileName and/or extension
-     */
-    public static File[] findFiles(File file, String fileName, String extension) throws IOException {
-        //log.debug(file.getName()+"  is directory?  "+file.isDirectory()+", or is file "+file.isFile()+", or maybe hidden: "+file.isHidden()+", is absolute? "+file.isAbsolute());
-        File[] files = null;
-        Collection<File> list = new ArrayList<File>();
-
-        findFilesList(file, fileName, extension, list);
-
-        if (list.size() > 0) {
-            files = (File[]) list.toArray(new File[list.size()]);
-        }
-
-        return files;
-    }
-
-    /**
-     * Search for subfiles. Insert null as wildcard for fileName and/or extension
-     */
-    private static void findFilesList(File file, String fileName, String extension, Collection<File> list) throws IOException {
-        if (file == null || file.getName() == null) {
-            return;
-        }
-        String name = file.getName();
-        int extPos = name.lastIndexOf(".");
-        String prefix = "";
-        String ext = "";
-
-        try {
-            prefix = name.substring(0, extPos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            ext = name.substring(extPos + 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        boolean match = true;
-
-        if (fileName != null) {
-            match = prefix.equalsIgnoreCase(fileName);
-        }
-
-        if (match && extension != null) {
-            match = ext.equalsIgnoreCase(extension);
-        }
-
-        if (match) {
-            list.add(file);
-        }
-
-        if (file.isDirectory()) {
-            File[] subFiles = file.listFiles();
-            if (subFiles != null) {
-                for (File subFile : subFiles) {
-                    findFilesList(subFile, fileName, extension, list);
-                }
-            }
-        }
-
-    }
 
     public static byte[] compressString(String s, String charsetName) {
         if (s == null) {
             return null;
         }
-        try{
+        try {
             return compress(s.getBytes(charsetName));
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -331,11 +214,11 @@ public class ZipUtils {
 
     public static void main(String[] args) {
         String st = "je suis une longue chaine de caracteres";
-        System.out.println("String to compress : "+st);
+        System.out.println("String to compress : " + st);
         byte[] compst = ZipUtils.compressString(st);
-        System.out.println("Compressed : "+compst);
+        System.out.println("Compressed : " + compst);
         String decompst = ZipUtils.decompressString(compst);
-        System.out.println("Decompressed string : "+decompst);
+        System.out.println("Decompressed string : " + decompst);
     }
 
     public static byte[] compressString(String s) {
@@ -378,7 +261,7 @@ public class ZipUtils {
         }
     }
 
-    public static String decompressString(byte[] compressedString){
+    public static String decompressString(byte[] compressedString) {
         return decompressString(compressedString, null);
     }
 
@@ -412,10 +295,10 @@ public class ZipUtils {
                 }*/
             }
             //log.debug("decompress done with resulting size " + (offset + length));
-            if(charset != null){
+            if (charset != null) {
                 String s = new String(buf, 0, offset + length, charset);
-                return ""+s;
-            }else{
+                return "" + s;
+            } else {
                 return new String(buf, 0, offset + length);
             }
         } catch (Exception e) {
@@ -499,28 +382,11 @@ public class ZipUtils {
         }
     }
 
-    /*
-    private static String generateUniqueString() {
-        return "" + System.currentTimeMillis() + ((int) (Math.random() * 1000));
-    }
-
-    private static void checkCreateZipDir() {
-        try {
-            File f = new File(dir_zipfiles);
-            if (!f.exists())
-                f.mkdirs();
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-    }*/
-
-
-
 
     public static byte[] gzipCompress(String s) {
         try {
             BufferedReader in = new BufferedReader(new StringReader(s));
-            ByteArrayOutputStream output=new ByteArrayOutputStream();
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
             BufferedOutputStream out = new BufferedOutputStream(new GZIPOutputStream(output));
             int c;
             while ((c = in.read()) != -1) out.write(c);
@@ -534,56 +400,68 @@ public class ZipUtils {
         }
     }
 
-    /**
-     * Calculates an Adler-32 checksum over a ByteArray
-     *
-     * @see http://en.wikipedia.org/wiki/Adler-32#Example_implementation
-     *
-     * @param data
-     * @return Adler-32 checksum
-     */
-    static final private int Adler32_BASE=65521;
-    static final private int Adler32_NMAX=5552;
-    public static long adler32(long adler, byte[] buf, int index, int len){
-        if(buf == null){ return 1L; }
+    static final private int Adler32_BASE = 65521;
+    static final private int Adler32_NMAX = 5552;
 
-        long s1=adler&0xffff;
-        long s2=(adler>>16)&0xffff;
+    public static long adler32(long adler, byte[] buf, int index, int len) {
+        if (buf == null) {
+            return 1L;
+        }
+
+        long s1 = adler & 0xffff;
+        long s2 = (adler >> 16) & 0xffff;
         int k;
 
-        while(len > 0) {
+        while (len > 0) {
 
-            k=len<Adler32_NMAX?len:Adler32_NMAX;
-            len-=k;
-            while(k>=16){
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                s1+=buf[index++]&0xff; s2+=s1;
-                k-=16;
+            k = len < Adler32_NMAX ? len : Adler32_NMAX;
+            len -= k;
+            while (k >= 16) {
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                s1 += buf[index++] & 0xff;
+                s2 += s1;
+                k -= 16;
             }
-            if(k!=0){
-                do{
-                    s1+=buf[index++]&0xff; s2+=s1;
+            if (k != 0) {
+                do {
+                    s1 += buf[index++] & 0xff;
+                    s2 += s1;
                 }
-                while(--k!=0);
+                while (--k != 0);
             }
-            s1%=Adler32_BASE;
-            s2%=Adler32_BASE;
+            s1 %= Adler32_BASE;
+            s2 %= Adler32_BASE;
         }
-        return (s2<<16)|s1;
+        return (s2 << 16) | s1;
     }
-   
+
 }

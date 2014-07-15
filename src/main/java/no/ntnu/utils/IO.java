@@ -20,12 +20,6 @@ import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: Oct 20, 2010
- * Time: 9:55:29 PM
- */
 public class IO {
     public static final IO instance = new IO();
 
@@ -36,11 +30,7 @@ public class IO {
     private IO() {
     }
 
-    /**
-     * Flushes and closes the output streams.
-     *
-     * @param streams the streams to be flushed and closed.
-     */
+
     public static void flushAndClose(OutputStream... streams) {
         if (streams == null || streams.length == 0) return;
         try {
@@ -65,12 +55,6 @@ public class IO {
         }
     }
 
-    /**
-     * Encodes object as an XML. The output is written to the specified file.
-     *
-     * @param filename the file to write the xml output
-     * @param object   object to be encoded as XML.
-     */
     public static void xmlEncode(String filename, Object object) {
         try {
             XMLEncoder encoder = new XMLEncoder(new FileOutputStream(filename));
@@ -103,17 +87,17 @@ public class IO {
         }
         return null;
     }
-    
-    public static void readLines(final String filename,final LineProcessor processor){
-        readLines(new File(filename),processor);
+
+    public static void readLines(final String filename, final LineProcessor processor) {
+        readLines(new File(filename), processor);
     }
 
-    public static void readLines(final File file,final LineProcessor processor){
+    public static void readLines(final File file, final LineProcessor processor) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             try {
                 String line;
-                while((line=reader.readLine())!=null)
+                while ((line = reader.readLine()) != null)
                     processor.process(line);
             } finally {
                 close(reader);
@@ -123,23 +107,23 @@ public class IO {
         }
     }
 
-    public static void readLines(final BufferedReader reader,final LineProcessor processor){
-            try {
-                String line;
-                while((line=reader.readLine())!=null)
-                    processor.process(line);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            } finally {
-                close(reader);
-            }
+    public static void readLines(final BufferedReader reader, final LineProcessor processor) {
+        try {
+            String line;
+            while ((line = reader.readLine()) != null)
+                processor.process(line);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            close(reader);
+        }
 
     }
 
     public static Properties load(File filename) {
         try {
-            Properties p= new Properties();
+            Properties p = new Properties();
             p.load(new FileReader(filename));
             return p;
         } catch (IOException e) {
@@ -187,12 +171,7 @@ public class IO {
         }
     }
 
-    /**
-     * Calls the flush method on gzip output stream.
-     *
-     * @param out GZIPOutputStream
-     * @return
-     */
+
     public IO finish(GZIPOutputStream out) {
         try {
             out.finish();
@@ -202,12 +181,7 @@ public class IO {
         return instance;
     }
 
-    /**
-     * Creates a new FileOutputStream from the specified <tt>fileName</tt> file
-     *
-     * @param fileName filename used to open the input stream
-     * @return FileOutputStream
-     */
+
     public FileOutputStream fileOutputStream(String fileName) {
         try {
             return new FileOutputStream(fileName);
@@ -247,13 +221,6 @@ public class IO {
         return instance.fileOutputStream(fileName.getAbsolutePath());
     }
 
-    /**
-     * Prints the specified string to the print writer object and appends a newLine at the end.
-     *
-     * @param pw print writer object
-     * @param s  string to be written.
-     * @return instance
-     */
     public IO println(PrintWriter pw, String s) {
         try {
             if (pw != null)
@@ -274,12 +241,6 @@ public class IO {
         return instance;
     }
 
-    /**
-     * Writes the content, flushes and closes the writer object. All exceptions are caught, so it is not required to handle exceptions.
-     *
-     * @param writer  writer, where the content is written.
-     * @param content the string content to be written.
-     */
     public static void writeFlushClose(final Writer writer, final String content) {
         try {
             if (writer != null)
@@ -294,24 +255,12 @@ public class IO {
         }
     }
 
-    /**
-     * Prints the specified string to the print writer object and appends a newLine at the end.
-     * <p> After println is finished, this method (as the name suggests) flushes and closes the writer.
-     *
-     * @param pw print writer object
-     * @param s  string to be written.
-     */
+
     public static void printlnAndClose(PrintWriter pw, String s) {
         instance.println(pw, s).flush(pw).clos(pw);
     }
 
-    /**
-     * Prints the specified string to the print writer object.
-     * <p> After println is finished, this method (as the name suggests) flushes and closes the writer.
-     *
-     * @param pw print writer object
-     * @param s  string to be written.
-     */
+
     public static void printAndClose(PrintWriter pw, String s) {
         instance.print(pw, s)
                 .flush(pw)
@@ -319,12 +268,6 @@ public class IO {
     }
 
 
-    /**
-     * Flushes  the <tt>f</tt> object.
-     *
-     * @param f flushable object
-     * @return IO instance
-     */
     public IO flush(Flushable f) {
 
         try {
@@ -340,12 +283,6 @@ public class IO {
         close(c);
     }
 
-    /**
-     * Closes the <tt>c</tt> object.
-     *
-     * @param c closeable object
-     * @return IO instance
-     */
     public static IO close(Closeable c) {
         try {
             if (c != null)
@@ -355,19 +292,12 @@ public class IO {
         }
         return instance;
     }
-    
+
     public IO clos(Closeable c) {
-    	close(c);
-    	return this;
+        close(c);
+        return this;
     }
 
-    /**
-     * Writes the content of given string <tt>str</tt> to a given output.
-     *
-     * @param str the string content to be written
-     * @param out the output absolute file name
-     * @return IO
-     */
     public IO write(String str, String out) {
         try {
             final FileOutputStream fos = fileOutputStream(out);
@@ -393,13 +323,14 @@ public class IO {
     public static void writeAndClose(java.util.Properties data, File file) {
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            data.store(out,"hashed urls");
+            data.store(out, "hashed urls");
             flushAndClose(out);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
+
     public IO writeAndClose(byte[] bytes, OutputStream out) {
         try {
             return write(new ByteArrayInputStream(bytes), out);
@@ -446,16 +377,9 @@ public class IO {
         }
     }
 
-    /**
-     * Writes to output stream. Note that the method closes input stream.
-     *
-     * @param is input stream to read.
-     * @param os output stream to write to.
-     * @return IO object.
-     */
     public IO write(InputStream is, OutputStream os) {
-        if(!Boolean.getBoolean("IO.quite"))
-            System.out.println("writing with encoding: "+System.getProperty("file.encoding"));
+        if (!Boolean.getBoolean("IO.quite"))
+            System.out.println("writing with encoding: " + System.getProperty("file.encoding"));
         try {
             byte[] buf = new byte[1024];
             int len;
@@ -518,9 +442,10 @@ public class IO {
             throw new RuntimeException(e);
         }
     }
-    public static class Header{
+
+    public static class Header {
         public final String key;
-        public final String  value;
+        public final String value;
 
         public Header(String key, String value) {
             this.key = key;
@@ -528,11 +453,11 @@ public class IO {
         }
     }
 
-    public static String readUrlWithHeaders(String url,Header ... headers) {
+    public static String readUrlWithHeaders(String url, Header... headers) {
         try {
             URL urlEndpoint = new URL(url);
             URLConnection con = urlEndpoint.openConnection();
-            for(Header h:headers) con.addRequestProperty(h.key,h.value);
+            for (Header h : headers) con.addRequestProperty(h.key, h.value);
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             final StringBuffer s = new StringBuffer();
@@ -569,7 +494,7 @@ public class IO {
     }
 
 
-    public static String sendDoc(String url,String doc) {
+    public static String sendDoc(String url, String doc) {
         try {
             URL urlEndpoint = new URL(url);
             HttpURLConnection con = (HttpURLConnection) urlEndpoint.openConnection();
@@ -577,8 +502,8 @@ public class IO {
             DataOutputStream ostream = new DataOutputStream(con.getOutputStream());
             ostream.write(doc.getBytes());
             ostream.close();
-            InputStream input=con.getInputStream();
-            byte[] buffer = new byte[1024*4];
+            InputStream input = con.getInputStream();
+            byte[] buffer = new byte[1024 * 4];
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             int n;
             while (-1 != (n = input.read(buffer)))
@@ -617,21 +542,21 @@ public class IO {
             con.setRequestProperty("Method", "GET");
             con.setRequestProperty("Accept-Charset", "UTF-8");
             String contentType = con.getContentType();
-            String charset=parseCharset(contentType,"UTF-8");
-			return new MaskedInputStream(con.getInputStream(),charset,contentType,con.getContentLength());
+            String charset = parseCharset(contentType, "UTF-8");
+            return new MaskedInputStream(con.getInputStream(), charset, contentType, con.getContentLength());
         } catch (Exception e) {
             System.err.println("IO:519:" + e.getMessage());
         }
         return null;
     }
 
-    private static String parseCharset(String contentType,String def) {
-        if(contentType==null || contentType.length()<=0)
+    private static String parseCharset(String contentType, String def) {
+        if (contentType == null || contentType.length() <= 0)
             return null;
         final String str = "charset=";
         final int i = contentType.indexOf(str);
-        if(i>-1)
-            return contentType.substring(i+str.length());
+        if (i > -1)
+            return contentType.substring(i + str.length());
         return def;
     }
 
@@ -660,11 +585,11 @@ public class IO {
             return s.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            if(!retry) {
+            if (!retry) {
                 try {
                     Thread.sleep(4000);
                     System.out.println("retryring...");
-                    return readUrlMaskUserAgent(url,true);
+                    return readUrlMaskUserAgent(url, true);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                     throw new RuntimeException(e1);
@@ -782,30 +707,20 @@ public class IO {
         return delete(new File(filename));
     }
 
-    /**
-     * Deletes a file.
-     *
-     * @param file file to be deleted.
-     * @return true if the file was deleted, false otherwise.
-     */
+
     public static boolean delete(File file) {
         return (file == null
                 || !file.exists()
                 || file.delete());
     }
 
-    /**
-     * Deletes files recursively.
-     *
-     * @param file
-     * @return
-     */
+
     public static boolean deleteR(String file) {
         return deleteR(new File(file));
     }
 
     public static File[] listFiles(File dir) {
-        return listFiles(dir,null);
+        return listFiles(dir, null);
     }
 
     public static Iterator<File> iterateFiles(File dir) {
@@ -817,21 +732,17 @@ public class IO {
     }
 
     public static File[] listFiles(File dir, FilenameFilter filter) {
-        if(dir.isFile())return new File[]{dir};
-        if(filter!=null)
+        if (dir.isFile()) return new File[]{dir};
+        if (filter != null)
             return dir.listFiles(filter);
         else return dir.listFiles();
     }
 
-    /**
-     * Deletes files recursively.
-     * @param file
-     * @return
-     */
+
     public static boolean deleteR(File file) {
         final File[] children = file.listFiles();
-        if(children!=null)
-            for(File f: children)
+        if (children != null)
+            for (File f : children)
                 deleteR(f);
         return delete(file);
     }
@@ -846,17 +757,17 @@ public class IO {
     public static File ensureDir(String file) {
         return ensureDir(new File(file));
     }
-    
-    public static boolean exists(String filename){
-    	return StringUtils.hasLength(filename) && new File(filename).exists();
-    }
-    
-    public static boolean exists(File f){
-    	return f!=null && f.exists();
+
+    public static boolean exists(String filename) {
+        return StringUtils.hasLength(filename) && new File(filename).exists();
     }
 
-    public static Properties prop(File f){
-        if(!exists(f))return null;
+    public static boolean exists(File f) {
+        return f != null && f.exists();
+    }
+
+    public static Properties prop(File f) {
+        if (!exists(f)) return null;
 
         Properties p = new Properties();
         try {
@@ -871,9 +782,9 @@ public class IO {
     public static File ensureDir(File file) {
         try {
             boolean b = file.exists() || file.mkdirs();
-			if (b)
+            if (b)
                 return file;
-			else System.err.println("Could not mkdirs the dir "+file.getAbsolutePath());
+            else System.err.println("Could not mkdirs the dir " + file.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -903,11 +814,7 @@ public class IO {
         return new String(read(input));
     }
 
-    /**
-     * Creates directory if it does not exist.
-     *
-     * @param dir the directory
-     */
+
     public static String mkdir(String dir) {
         try {
             File f = new File(dir);
@@ -924,7 +831,7 @@ public class IO {
         //System.out.println("classloader:"+IO.class.getClassLoader());
         //final InputStream stream = IO.class.getClassLoader().getResourceAsStream(s);
         final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(s);
-        System.out.println("reading "+s+":::"+stream);
+        System.out.println("reading " + s + ":::" + stream);
         return new String(read(stream));
     }
 
@@ -939,7 +846,7 @@ public class IO {
 
     public static String decode(String label) {
         try {
-            return URLDecoder.decode(label,"UTF-8");
+            return URLDecoder.decode(label, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return label;
@@ -948,67 +855,62 @@ public class IO {
 
     public static void printCP() {
         ClassLoader sysClassLoader = ClassLoader.getSystemClassLoader();
-        URL[] urls = ((URLClassLoader)sysClassLoader).getURLs();
-        for(int i=0; i< urls.length; i++)
-        {
+        URL[] urls = ((URLClassLoader) sysClassLoader).getURLs();
+        for (int i = 0; i < urls.length; i++) {
             System.out.println(urls[i].getFile());
         }
     }
-    
-	public static void download(String url, String dst) {
-		MaskedInputStream mua = maskUserAgent(url);
-	    int contentLength = mua.contentlength;
-	    BigDecimal cl = new BigDecimal(contentLength);
-	    BigDecimal p= new BigDecimal(100);
-	    System.out.println("downloading "+url);
-	    System.out.println("destination:"+dst);
-	    InputStream in = mua.is;//new BufferedInputStream(mua.is);
-	    FileOutputStream output = fos(dst);
-	    int b;
-	    try {
-	    	int counter=0;
-			while((b=in.read())!=-1){
-				output.write((byte)b);
-				if(counter++ %  65536 ==0){
-					BigDecimal a = new BigDecimal(counter);
-				    BigDecimal res = a.divide(cl,1,RoundingMode.HALF_EVEN).multiply(p); 
-					System.out.print(new StringBuilder("   downloading: ".concat(StringUtils.cat("(", res.toString(), " % ) ", valueOf(counter), " of ", valueOf(contentLength)))).append('\r'));
-				}
-				if(counter % 10485760 ==0)
-					output.flush();
-			}
-			output.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			close(in,output);
-		}
-	    System.out.println("download finished!");
 
-	}
-	public static void close(Socket s){
-		try {
-			if(s!=null)
-				s.close();
-		} catch (Exception e) {
-			System.err.println("Could not close the socket!");
-		}
-	}
+    public static void download(String url, String dst) {
+        MaskedInputStream mua = maskUserAgent(url);
+        int contentLength = mua.contentlength;
+        BigDecimal cl = new BigDecimal(contentLength);
+        BigDecimal p = new BigDecimal(100);
+        System.out.println("downloading " + url);
+        System.out.println("destination:" + dst);
+        InputStream in = mua.is;//new BufferedInputStream(mua.is);
+        FileOutputStream output = fos(dst);
+        int b;
+        try {
+            int counter = 0;
+            while ((b = in.read()) != -1) {
+                output.write((byte) b);
+                if (counter++ % 65536 == 0) {
+                    BigDecimal a = new BigDecimal(counter);
+                    BigDecimal res = a.divide(cl, 1, RoundingMode.HALF_EVEN).multiply(p);
+                    System.out.print(new StringBuilder("   downloading: ".concat(StringUtils.cat("(", res.toString(), " % ) ", valueOf(counter), " of ", valueOf(contentLength)))).append('\r'));
+                }
+                if (counter % 10485760 == 0)
+                    output.flush();
+            }
+            output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            close(in, output);
+        }
+        System.out.println("download finished!");
 
-    /**
-     * Appends the <tt>line</tt> at the tail of the file <tt>filename</tt>.
-     *
-     * @param filename the filename to append to
-     * @param line the line to be appended.
-     */
-	public static void appendL(String filename,String line){
-        append(filename,StringUtils.cat(line,"\n"));
     }
 
-	public static synchronized void append(String filename,String line){
+    public static void close(Socket s) {
+        try {
+            if (s != null)
+                s.close();
+        } catch (Exception e) {
+            System.err.println("Could not close the socket!");
+        }
+    }
+
+
+    public static void appendL(String filename, String line) {
+        append(filename, StringUtils.cat(line, "\n"));
+    }
+
+    public static synchronized void append(String filename, String line) {
 
         try {
-            FileWriter fstream = new FileWriter(filename,true);
+            FileWriter fstream = new FileWriter(filename, true);
             BufferedWriter out = new BufferedWriter(fstream);
             try {
                 out.write(line);
@@ -1020,35 +922,35 @@ public class IO {
         }
     }
 
-	public static File childOf(String parent,String filename, String extension){
-		return new File(parent,StringUtils.cat(filename,extension));
-	}
+    public static File childOf(String parent, String filename, String extension) {
+        return new File(parent, StringUtils.cat(filename, extension));
+    }
 
-	public static void deleteChildren(String f){
-		deleteChildren(new File(f));
-	}
-	
-	public static void deleteChildren(File f){	
-		File[] children = f.listFiles();
-		if(children==null)return;
-		for(File c:children)
-			c.delete();
-	}
-	
+    public static void deleteChildren(String f) {
+        deleteChildren(new File(f));
+    }
+
+    public static void deleteChildren(File f) {
+        File[] children = f.listFiles();
+        if (children == null) return;
+        for (File c : children)
+            c.delete();
+    }
+
     public static InputStream loadResource(String str) {
         return instance.getClass().getResourceAsStream(str);
     }
 
-    public static interface LineProcessor{
+    public static interface LineProcessor {
         public void process(final String line);
     }
 
-    public static File fileInCurrentDir(String name){
-        return new File(System.getProperty("user.dir"),name);
+    public static File fileInCurrentDir(String name) {
+        return new File(System.getProperty("user.dir"), name);
     }
 
-    public static File fileInUserHomeDir(String name){
-        return new File(System.getProperty("user.home"),name);
+    public static File fileInUserHomeDir(String name) {
+        return new File(System.getProperty("user.home"), name);
     }
 
     public static BufferedWriter bufferedWriter(String file) {
@@ -1059,10 +961,11 @@ public class IO {
             throw new RuntimeException(e);
         }
     }
-    public static File dirsInUserHomeDir(String name){
-        File parent=new File(System.getProperty("user.home"));
+
+    public static File dirsInUserHomeDir(String name) {
+        File parent = new File(System.getProperty("user.home"));
         String[] split = name.split(File.separator);
-        File file=parent;
+        File file = parent;
         for (String s : split) {
             file = new File(file, s);
             file.mkdir();
@@ -1071,13 +974,13 @@ public class IO {
         return file;
     }
 
-    public static String toUrl(String baseUrl,Collection<String> params){
-        StringBuilder sb= new StringBuilder(baseUrl);
-        if(!baseUrl.endsWith("?"))
+    public static String toUrl(String baseUrl, Collection<String> params) {
+        StringBuilder sb = new StringBuilder(baseUrl);
+        if (!baseUrl.endsWith("?"))
             sb.append("?");
         for (String param : params)
             sb.append(param).append("&");
-        sb.deleteCharAt(sb.length()-1);
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
@@ -1085,27 +988,28 @@ public class IO {
         return new ByteArrayInputStream(s.getBytes());
     }
 
-    public static void storeProp(File outputFile,String k, String v){
-        Properties p= new Properties();
-        p.put(k,v);
+    public static void storeProp(File outputFile, String k, String v) {
+        Properties p = new Properties();
+        p.put(k, v);
         try {
-            p.store(new FileWriter(outputFile),"");
+            p.store(new FileWriter(outputFile), "");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public static class MaskedInputStream{
+
+    public static class MaskedInputStream {
         private final InputStream is;
         private final String charset;
         @SuppressWarnings("unused")
-		private final String contenttype;
+        private final String contenttype;
         private final int contentlength;
-        
+
         public MaskedInputStream(InputStream is, String charset, String contenttype, int contentlength) {
             this.is = is;
             this.charset = charset;
-            this.contenttype=contenttype;
-            this.contentlength=contentlength;
+            this.contenttype = contenttype;
+            this.contentlength = contentlength;
         }
 
         public InputStream getInputStream() {

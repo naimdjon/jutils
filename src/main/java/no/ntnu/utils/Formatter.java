@@ -5,48 +5,42 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: 12/28/11
- * Time: 12:26
- * $Id$
- */
 public class Formatter {
-    public static final int MB=1048576;
+    public static final int MB = 1048576;
 
-    private static NumberFormat nf=new DecimalFormat("###,###,###,###");
-    private static final SimpleDateFormat df= new SimpleDateFormat("dd.MM.yyyy HH:mm");
-    public static String format(long number){
+    private static NumberFormat nf = new DecimalFormat("###,###,###,###");
+    private static final SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+
+    public static String format(long number) {
         return nf.format(number);
     }
 
-    public static String format(int number){
+    public static String format(int number) {
         return nf.format(number);
     }
 
-    public static String fmt(int number){
+    public static String fmt(int number) {
         return nf.format(number);
     }
 
-    public static String nowPretty(){
+    public static String nowPretty() {
         return datePretty(System.currentTimeMillis());
     }
 
-    public static synchronized String datePretty(long number){
-    	return df.format(new Date(number));
+    public static synchronized String datePretty(long number) {
+        return df.format(new Date(number));
     }
 
-    public static synchronized String now(){
-    	return nowPretty();
+    public static synchronized String now() {
+        return nowPretty();
     }
 
-    public static long toMB(final long nrOfBytes){
+    public static long toMB(final long nrOfBytes) {
         return toMegaByte(nrOfBytes);
     }
 
-    public static long toMegaByte(final long nrOfBytes){
-        return nrOfBytes/MB;
+    public static long toMegaByte(final long nrOfBytes) {
+        return nrOfBytes / MB;
     }
-    
+
 }

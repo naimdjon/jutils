@@ -15,86 +15,76 @@ import static no.ntnu.utils.Col.asReverseSortedList;
 import static no.ntnu.utils.Formatter.toMB;
 import static no.ntnu.utils.StringUtils.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: 1/7/12
- * Time: 13:48
- * $Id$
- */
+
 public class Sys {
-    public static final String USER=System.getProperty("user.name");
-    private static final String OS=System.getProperty("os.name").toLowerCase();
-    public static final boolean isMac= contains(OS, "mac");
-    public static final boolean isLinux= contains(OS, "linux");
-    public static final boolean isWindows= contains(OS, "windows");
+    public static final String USER = System.getProperty("user.name");
+    private static final String OS = System.getProperty("os.name").toLowerCase();
+    public static final boolean isMac = contains(OS, "mac");
+    public static final boolean isLinux = contains(OS, "linux");
+    public static final boolean isWindows = contains(OS, "windows");
 
-    /**
-     * Sets the system property
-     * 
-     * @param property property name
-     * @param value property value
-     */
-    public static void set(String property, String value){
-    	System.setProperty(property, value);
-    }
-    
-    public static String prop(String s, String def){
-        return System.getProperty(s,def);
+
+    public static void set(String property, String value) {
+        System.setProperty(property, value);
     }
 
-    public static boolean trueProp(String s){
-    	return StringUtils.isTrue(System.getProperty(s));
+    public static String prop(String s, String def) {
+        return System.getProperty(s, def);
     }
-    
-    public static int intProp(String s, int def){
+
+    public static boolean trueProp(String s) {
+        return StringUtils.isTrue(System.getProperty(s));
+    }
+
+    public static int intProp(String s, int def) {
         String p = System.getProperty(s);
-        if(isNumber(p)) return parseInt(p);
+        if (isNumber(p)) return parseInt(p);
         return def;
     }
-    
-    public static float avgTop(Collection<Float> floats,int top){
+
+    public static float avgTop(Collection<Float> floats, int top) {
         List<Float> floats1 = asReverseSortedList(floats);
-        int antall=1;
-        float total=0.0f;
+        int antall = 1;
+        float total = 0.0f;
         for (Float aFloat : floats1) {
             if (antall++ >= top) break;
             total += aFloat;
         }
-        return total/antall;
+        return total / antall;
     }
 
 
-    public static void pidOut(){
-    	System.out.println(pid());
+    public static void pidOut() {
+        System.out.println(pid());
     }
-    
-    public static String pid(){
-    	return ManagementFactory.getRuntimeMXBean().getName();
+
+    public static String pid() {
+        return ManagementFactory.getRuntimeMXBean().getName();
     }
-    public static boolean anyTrue(boolean ... flags){
-    	for(boolean b:flags)
-    		if(b)return true;
-    	return false;
+
+    public static boolean anyTrue(boolean... flags) {
+        for (boolean b : flags)
+            if (b) return true;
+        return false;
     }
-    
-    public static float avg(Collection<Float> floats){
+
+    public static float avg(Collection<Float> floats) {
         int size = floats.size();
         float total = sum(floats);
-        return total/(float)size;
+        return total / (float) size;
     }
 
-    public static float sum(Collection<Float> floats){
-        float total=0.0f;
-        for(float f:floats)
-            total+=f;
+    public static float sum(Collection<Float> floats) {
+        float total = 0.0f;
+        for (float f : floats)
+            total += f;
         return total;
     }
-    
+
     @SuppressWarnings("rawtypes")
-	public static void addShutdownHook(final Callable r) {
+    public static void addShutdownHook(final Callable r) {
         try {
-            Runtime.getRuntime().addShutdownHook(new Thread(){
+            Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
                     try {
@@ -109,11 +99,11 @@ public class Sys {
         }
     }
 
-	public static void onExit(final Runnable r) {
+    public static void onExit(final Runnable r) {
         runOnExit(r);
     }
 
-	public static void runOnExit(final Runnable r) {
+    public static void runOnExit(final Runnable r) {
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(r));
         } catch (Exception e) {
@@ -121,22 +111,21 @@ public class Sys {
         }
     }
 
-	public static void exitOnUncaughtException() {
+    public static void exitOnUncaughtException() {
         try {
-        	Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-				public void uncaughtException(Thread arg0, Throwable arg1) {
-					D.e("Uncaught exception, exiting. occurred at:");
-					arg1.printStackTrace();
-					System.exit(0);
-				}
-			});
+            Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+                public void uncaughtException(Thread arg0, Throwable arg1) {
+                    Debug.e("Uncaught exception, exiting. occurred at:");
+                    arg1.printStackTrace();
+                    System.exit(0);
+                }
+            });
         } catch (Exception e) {
             System.err.println("Error setting uncaught exception handler!");
         }
     }
 
 
-	
     public static void main(String[] args) {
         List<Float> floats = Arrays.asList(2.11f, 2.14f, 4.122f);
         System.out.println(sum(floats));
@@ -150,16 +139,16 @@ public class Sys {
         t.printStackTrace(wr);
         return str.toString();
     }
-    
-    public static String readPasswd(){
-       Console cons=console();
+
+    public static String readPasswd() {
+        Console cons = console();
         if (cons == null) {
             //System.err.println("No console.");
-            Scanner s= new Scanner(System.in);
+            Scanner s = new Scanner(System.in);
             return trim(s.nextLine());
         }
-        char[] passwd=cons.readPassword("%s", "Password:");
-        if (passwd==null) {
+        char[] passwd = cons.readPassword("%s", "Password:");
+        if (passwd == null) {
             System.err.println("Failed to read password from console!");
             //java.util.Arrays.fill(passwd, ' ');
         }
@@ -169,48 +158,48 @@ public class Sys {
         }
         return new String(passwd);
     }
-    
-    public static boolean hostnameContains(String s){
-    	try {
-			String canonicalHostName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
-			return StringUtils.contains(canonicalHostName, s);
-		} catch (Exception e) {
-			System.err.println("could not determine the hostname.");
-		}
-    	return false;
+
+    public static boolean hostnameContains(String s) {
+        try {
+            String canonicalHostName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+            return StringUtils.contains(canonicalHostName, s);
+        } catch (Exception e) {
+            System.err.println("could not determine the hostname.");
+        }
+        return false;
     }
-    
-    public static String mem(){
+
+    public static String mem() {
         final Runtime runtime = Runtime.getRuntime();
         return String.format("mem info free=%s, total=%s, (in MBytes)", toMB(runtime.freeMemory()), toMB(runtime.totalMemory()));
     }
 
-    public static void sysinfo(){
-    	meminfo();
-    	try {
-			String hostName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
-			D.i("Hostname:"+hostName);
-		} catch (Exception e) {
-			System.err.println("Could not get the hostname");
-		}
+    public static void sysinfo() {
+        meminfo();
+        try {
+            String hostName = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+            Debug.i("Hostname:" + hostName);
+        } catch (Exception e) {
+            System.err.println("Could not get the hostname");
+        }
     }
-    
-    public static void meminfo(){
+
+    public static void meminfo() {
         final Runtime runtime = Runtime.getRuntime();
         long freeMemory = runtime.freeMemory();
-    	long totalMemory = runtime.totalMemory();
-        System.out.println(String.format("mem info free=%s, total=%s, (in MBytes), %s %s", toMB(freeMemory), toMB(totalMemory),(freeMemory/totalMemory)*100,"% used"));
+        long totalMemory = runtime.totalMemory();
+        System.out.println(String.format("mem info free=%s, total=%s, (in MBytes), %s %s", toMB(freeMemory), toMB(totalMemory), (freeMemory / totalMemory) * 100, "% used"));
     }
 
 
     public static double hypot(double a, double b) {
         double r;
         if (Math.abs(a) > Math.abs(b)) {
-            r = b/a;
-            r = Math.abs(a)*Math.sqrt(1+r*r);
+            r = b / a;
+            r = Math.abs(a) * Math.sqrt(1 + r * r);
         } else if (b != 0) {
-            r = a/b;
-            r = Math.abs(b)*Math.sqrt(1+r*r);
+            r = a / b;
+            r = Math.abs(b) * Math.sqrt(1 + r * r);
         } else {
             r = 0.0;
         }
@@ -219,18 +208,18 @@ public class Sys {
 
 
     public static void exitWhenDone(final Collection<? extends Worker> workers) {
-        while(true){
-            boolean allDone=true;
+        while (true) {
+            boolean allDone = true;
             //D.d("checking the state of affairs...");
-            for(Worker wp:workers){
-                if(!wp.isDone()){
-                    D.d(wp + " is not done yet!");
-                    allDone=false;
+            for (Worker wp : workers) {
+                if (!wp.isDone()) {
+                    Debug.d(wp + " is not done yet!");
+                    allDone = false;
                     break;
                 }
             }
-            if(allDone){
-                D.i("Everything has finished, exiting...");
+            if (allDone) {
+                Debug.i("Everything has finished, exiting...");
                 System.exit(0);
             }
             try {

@@ -8,33 +8,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static java.util.Collections.addAll;
 import static java.util.Collections.reverseOrder;
 
-/**
- * Utility class to create generic collections. This is usefull and makes the code somewhat cleaner when the generic types in collection
- * include long class names and/or include nested collections. Example:<br/><br/>
- * <code>
- *  Map&lt;Long,Map&lt;String,Map&lt;Long,Long>>> myMap= new HashMap&lt;Long,Map&lt;String,Map&lt;Long,Long>>>();
- * </code>
- *      <br/><br/>
- * can be written: <br/><br/>
- * <code>
- * Map&lt;Long,Map&lt;String,Map&lt;Long,Long>>> myMap= ICollections.newMap();
- * </code>
- * <br/><br/>
- * which would be essentially the same, only with cleaner declaration.
- *
- * @author <a href="mailto:naimdjon@gmail.com">Naimdjon Takhirov</a>
- * @version $Id: Col.java 1901 2011-12-16 14:16:53Z takhirov $
- * @since v6.5 (28.08.2011)
- */
 @SuppressWarnings("unused")
 public class Col {
 
-    public static <K> Set<K> intersection(Set<K> s1,Set<K> s2){
-        Set<K> retval=newSet();
+    public static <K> Set<K> intersection(Set<K> s1, Set<K> s2) {
+        Set<K> retval = newSet();
         retval.addAll(s1);
-        boolean res=retval.retainAll(s2);
+        boolean res = retval.retainAll(s2);
         return retval;
     }
+
     /**
      * Creates a new instance of HashMap
      *
@@ -50,16 +33,16 @@ public class Col {
 
     public static <K, V> LinkedHashMap<K, V> linkedHashMap(boolean synchronised) {
         LinkedHashMap<K, V> linkedHashMap = new LinkedHashMap<K, V>();
-        if(synchronised)return (LinkedHashMap<K,V>)Collections.synchronizedMap(linkedHashMap);
+        if (synchronised) return (LinkedHashMap<K, V>) Collections.synchronizedMap(linkedHashMap);
         return linkedHashMap;
     }
 
-    public static <K, V> Map<K, V> newMap(Map<K,V> source) {
+    public static <K, V> Map<K, V> newMap(Map<K, V> source) {
         return new HashMap<K, V>(source);
     }
 
-    public static <K, V> Map<K, V> concurrentMap(Map<K,V> source) {
-        return new ConcurrentHashMap<K,V>(source);
+    public static <K, V> Map<K, V> concurrentMap(Map<K, V> source) {
+        return new ConcurrentHashMap<K, V>(source);
     }
 
     public static <K, V> TreeMap<K, V> treeMap() {
@@ -67,8 +50,8 @@ public class Col {
     }
 
 
-    public static <T extends Comparable<? super T>> List<T> sortt(List<T> l){
-        if (l==null) return l;
+    public static <T extends Comparable<? super T>> List<T> sortt(List<T> l) {
+        if (l == null) return l;
         java.util.Collections.sort(l);
         return l;
     }
@@ -81,8 +64,8 @@ public class Col {
      * Constructs an empty <tt>HashMap</tt> with the specified initial
      * capacity and the default load factor (0.75).
      *
-     * @return hashmap.
      * @param initialcapacity the initial capacity
+     * @return hashmap.
      */
     public static <K, V> HashMap<K, V> newHashMap(int initialcapacity) {
         return new HashMap<K, V>(initialcapacity);
@@ -90,6 +73,7 @@ public class Col {
 
     /**
      * Creates a new instance of hashtable.
+     *
      * @return hashtable
      */
     public static <K, V> Hashtable<K, V> newHashtable() {
@@ -105,6 +89,7 @@ public class Col {
     public static <E> Set<E> newHashSet(Collection<? extends E> c) {
         return new HashSet<E>(c);
     }
+
     public static <E> Set<E> newHashSet() {
         return new HashSet<E>();
     }
@@ -118,17 +103,17 @@ public class Col {
         return new HashSet<E>();
     }
 
-    public static <E> Set<E> newSet(Collection<E> col,E...elems) {
+    public static <E> Set<E> newSet(Collection<E> col, E... elems) {
         HashSet<E> s = new HashSet<E>(col);
-        if(elems==null)
+        if (elems == null)
             return s;
         addAll(s, elems);
         return s;
     }
 
-    public static <E> Set<E> newSet(E...elems) {
+    public static <E> Set<E> newSet(E... elems) {
         HashSet<E> hashSet = new HashSet<E>();
-        if(elems==null)
+        if (elems == null)
             return hashSet;
         addAll(hashSet, elems);
         return hashSet;
@@ -147,7 +132,7 @@ public class Col {
      * the specified initial capacity and default load factor, which is
      * <tt>0.75</tt>.
      *
-     * @param      initialCapacity   the initial capacity of the hash table.
+     * @param initialCapacity the initial capacity of the hash table.
      * @return new set
      */
     public static <E> Set<E> newSet(int initialCapacity) {
@@ -173,14 +158,14 @@ public class Col {
      * @return new list
      */
     public static <E> LinkedList<E> linkedList() {
-    	return new LinkedList<E>();
+        return new LinkedList<E>();
     }
 
     public static <E> Queue<E> newQueue() {
-    	return new LinkedList<E>();
+        return new LinkedList<E>();
     }
 
-    public static <E> LinkedBlockingQueue<E> linkedBlockingQueue(){
+    public static <E> LinkedBlockingQueue<E> linkedBlockingQueue() {
         return new LinkedBlockingQueue<E>();
     }
 
@@ -198,10 +183,10 @@ public class Col {
      * map.  In order to guarantee serial access, it is critical that
      * <strong>all</strong> access to the backing map is accomplished
      * through the returned map.<p>
-     *
+     * <p/>
      * </pre>
      * Failure to follow this advice may result in non-deterministic behavior.
-     *
+     * <p/>
      * <p>The returned map will be serializable if the specified map is
      * serializable.
      *
@@ -214,15 +199,16 @@ public class Col {
 
     /**
      * Checks whether the collection is empty or not. It is safe to call this method on null collection
+     *
      * @param col collection to be checked
      * @return true if collection is null or empty,false otherwise.
      */
     public static <E> boolean empty(Collection<E> col) {
-        return col==null || col.isEmpty();
+        return col == null || col.isEmpty();
     }
 
-    public static <K,V> boolean empty(Map<K,V> col) {
-        return col==null || col.isEmpty();
+    public static <K, V> boolean empty(Map<K, V> col) {
+        return col == null || col.isEmpty();
     }
 
     /**
@@ -239,40 +225,40 @@ public class Col {
      * collection is set.
      *
      * @param objs objects in the collection
-     * @param <E> elements in the collection
+     * @param <E>  elements in the collection
      * @return the newly created collection.
      */
-    public static <E> Collection<E> toCollection(E ... objs) {
+    public static <E> Collection<E> toCollection(E... objs) {
         return new HashSet<E>(Arrays.asList(objs));
     }
 
-    public static <E> Collection<E> toCol(E ... objs) {
+    public static <E> Collection<E> toCol(E... objs) {
         return new HashSet<E>(Arrays.asList(objs));
     }
 
-    public static <E> List<E> toList(E ... objs) {
+    public static <E> List<E> toList(E... objs) {
         return new ArrayList<E>(Arrays.asList(objs));
     }
 
-    
-    public static <E> Collection<E> getValues(Map<?,E> map,Object ... objs) {
+
+    public static <E> Collection<E> getValues(Map<?, E> map, Object... objs) {
         final HashSet<E> retval = new HashSet<E>();
-        for(Object o:objs)
+        for (Object o : objs)
             retval.add(map.get(o));
         return retval;
     }
 
 
     public static <K, V> String prettyPrint(final Map<K, V> map) {
-        StringBuffer s= new  StringBuffer();
-        for(Map.Entry<K,V> entry:map.entrySet())
+        StringBuffer s = new StringBuffer();
+        for (Map.Entry<K, V> entry : map.entrySet())
             s.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
         return s.toString();
     }
 
-    public static <E> List<E> newList(Collection<E> ...  elements) {
+    public static <E> List<E> newList(Collection<E>... elements) {
         final List<E> l = newList();
-        for(Collection<E>ee:elements)
+        for (Collection<E> ee : elements)
             l.addAll(ee);
         return l;
     }
@@ -295,7 +281,7 @@ public class Col {
 
     public static <T> List<T> asSortedList(Collection<T> c, Comparator<T> comp) {
         List<T> list = new ArrayList<T>(c);
-        java.util.Collections.sort(list,comp);
+        java.util.Collections.sort(list, comp);
         return list;
     }
 
@@ -304,63 +290,64 @@ public class Col {
         java.util.Collections.sort(list);
         return list;
     }
-    
-    public static <E> void p(Collection<E> c){
-    	print(c);
+
+    public static <E> void p(Collection<E> c) {
+        print(c);
     }
+
     /**
      * Prints the collection to system out
+     *
      * @param c
      */
-    public static <E> void print(Collection<E> c){
-    	for(E e:c)
-    		System.out.println(e);
+    public static <E> void print(Collection<E> c) {
+        for (E e : c)
+            System.out.println(e);
     }
 
     /**
      * Prints out topK first entries.
-     * @param c the collection
+     *
+     * @param c    the collection
      * @param topK the k head entries to be printed
      * @param <E>
      */
     public static <E> void print(Collection<E> c, final int topK) {
-        int i=0;
+        int i = 0;
         for (E e : c) {
-            if(++i>topK)break;
+            if (++i > topK) break;
             System.out.println(e);
         }
     }
 
     public static <E> void print(List<E> c, final int topK) {
-        for (int i = 0; i < c.size() && i<=topK; i++)
+        for (int i = 0; i < c.size() && i <= topK; i++)
             System.out.println(c.get(i));
     }
 
     /**
      * Converts the <tt>keyValues</tt> to map. Using the delimeters: "=" and ";"<br/>
      *
-     *
-     *
      * @param keyValues
      * @return
      */
-    public static Map<String,String> toMapStr(String ... keyValues) {
-        Map<String,String> retval=newMap();
+    public static Map<String, String> toMapStr(String... keyValues) {
+        Map<String, String> retval = newMap();
         for (String keyValue : keyValues) {
             String[] kv = keyValue.split("=|;");
             if (kv.length != 2) {
-                System.out.println("The splitted keyvalue length was not 2: "+kv.length);
+                System.out.println("The splitted keyvalue length was not 2: " + kv.length);
                 continue;
             }
-             retval.put(kv[0],kv[1]);
+            retval.put(kv[0], kv[1]);
         }
         return retval;
     }
-    
-    public static <E> void filter(Collection<E> col, Collection<E> filter){
+
+    public static <E> void filter(Collection<E> col, Collection<E> filter) {
         for (Iterator<E> it = col.iterator(); it.hasNext(); ) {
             E next = it.next();
-            if(filter.contains(next))it.remove();
+            if (filter.contains(next)) it.remove();
         }
     }
     /*

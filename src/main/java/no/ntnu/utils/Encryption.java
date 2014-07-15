@@ -6,48 +6,21 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
 
-/**
- * The utility class for working with message digests.
- * <p/>
- * The first version supports only password-based encryption based on DES algorithm.
- * <p>
- *  Added support for computing SHA1 hash for a given string.
- * </p>
- * @author <a href="mailto:naimdjon@gmail.com">Naimdjon Takhirov</a>
- * @version $Id: Encryption.java 64653 2011-04-27 09:07:51Z johnarne $
- * @since 16.03.2012
- */
-public class Encryption implements  java.io.Serializable{
+public class Encryption implements java.io.Serializable {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -1890284093101651567L;
-	/**
-     * The password phrase to ecrypt/decrypt strings
-     */
+    private static final long serialVersionUID = -1890284093101651567L;
     private String passPhrase;
 
-    /**
-     * Constructor initialized with the specified password.
-     *
-     * @param password the password phrase to be used for ecnryption/decryption.
-     */
     public Encryption(String password) {
-        if(password==null)throw new NullPointerException("Password cannot be null");
+        if (password == null) throw new NullPointerException("Password cannot be null");
         this.passPhrase = password;
     }
 
-    /**
-     * @return
-     */
     public static synchronized String gen6Pass() {
         java.util.Random random = new java.util.Random();
         int count = 6;
@@ -65,26 +38,16 @@ public class Encryption implements  java.io.Serializable{
         return s.toString();
     }
 
-    /**
-     * Returns default <tt>Encryption</tt> instance with default passphrase.
-     *
-     * @return Encryption instance
-     */
     public static Encryption create() {
         return new Encryption(gen6Pass());
     }
+
     private byte[] getSalt() {
         byte[] salt = {(byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32, (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03};
         return salt;
     }
 
-    /**
-     * Encrypts this string using <code>DES</code> algorithm.
-     *
-     * @param str string to encrypt.
-     * @return the encrypted String
-     * @throws InvalidKeyException
-     */
+
     public String encrypt(String str) {
         try {
             byte[] salt = getSalt();
@@ -103,23 +66,16 @@ public class Encryption implements  java.io.Serializable{
         }
     }
 
-    /**
-     * Decrypts this string using <code>DES</code> algorithm.
-     *
-     * @param str string to be decrypted
-     * @return return decrypted String.
-     * @throws InvalidKeyException
-     * @throws GeneralSecurityException
-     */
+
     public String decrypt(String str) throws RuntimeException {
         try {
-        byte[] salt =getSalt();
-        int iterationCount = 19;
-        KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(), salt, iterationCount);
-        SecretKey key = SecretKeyFactory.getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
-        AlgorithmParameterSpec paramSpec = new PBEParameterSpec(salt, iterationCount);
-        Cipher cip = Cipher.getInstance(key.getAlgorithm());
-        cip.init(Cipher.DECRYPT_MODE, key, paramSpec);
+            byte[] salt = getSalt();
+            int iterationCount = 19;
+            KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(), salt, iterationCount);
+            SecretKey key = SecretKeyFactory.getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
+            AlgorithmParameterSpec paramSpec = new PBEParameterSpec(salt, iterationCount);
+            Cipher cip = Cipher.getInstance(key.getAlgorithm());
+            cip.init(Cipher.DECRYPT_MODE, key, paramSpec);
 
             //byte[] bytes = cip.doFinal(new sun.misc.BASE64Decoder().decodeBuffer(str));
             byte[] bytes = cip.doFinal(Base64.decode(str));
@@ -147,13 +103,8 @@ public class Encryption implements  java.io.Serializable{
         return buf.toString();
     }
 
-    /**
-     * Computes the message digest hash for the given string.
-     * @param text
-     * @return
-     * @throws RuntimeException
-     */
-    public static String digest(String text) throws RuntimeException{
+
+    public static String digest(String text) throws RuntimeException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             byte[] sha1hash = new byte[40];

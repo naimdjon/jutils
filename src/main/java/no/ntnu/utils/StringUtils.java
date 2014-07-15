@@ -14,17 +14,17 @@ public class StringUtils {
     public static final transient Pattern integerPattern = compile("-?[0-9]+$");
     public static final transient Pattern multiWhiteSpacePattern = compile("\\s+");
     private static final String EMPTY = "";
-    private static final String NBSP= new String(new char[]{160});
+    private static final String NBSP = new String(new char[]{160});
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     public static boolean containsAnyIgnoreCase(String original, String... containingString) {
         if (!hasLength(original)) return false;
-        original=original.toLowerCase();
+        original = original.toLowerCase();
         for (String s : containingString)
             if (original.contains(s.toLowerCase())) return true;
         return false;
     }
-    
+
     /**
      * Compares this string to the specified object.
      * The result is <code>true</code> if and only if both arguments are
@@ -40,9 +40,10 @@ public class StringUtils {
     }
 
     public static String trim(String s) {
-        if(s==null)return s;
+        if (s == null) return s;
         return s.trim().replaceAll(NBSP, "");
     }
+
     public static boolean eq(String s1, String s2) {
         return equals(s1, s2);
     }
@@ -90,7 +91,7 @@ public class StringUtils {
      *
      * @param t throwable that needs to be printed
      * @return a string containing stack trace.
-     * @deprecated  use #Sys.stackTraceToStr()
+     * @deprecated use #Sys.stackTraceToStr()
      */
     public static String stackTraceToString(Throwable t) {
         java.io.StringWriter str = new java.io.StringWriter();
@@ -659,13 +660,13 @@ public class StringUtils {
         }
         return false;
     }
-    
-    public static StringBuilder clear(StringBuilder s){
-    	s.delete(0,s.length());
-    	return s;
+
+    public static StringBuilder clear(StringBuilder s) {
+        s.delete(0, s.length());
+        return s;
     }
 
-    
+
     // this function replaces all occurrences by the delimiter in content, (process by longest occurrence)
     public static String maskOccurrences(String content, final String delimeter, final Collection<String> labels) {
         String tmp = content.toLowerCase();
@@ -679,8 +680,8 @@ public class StringUtils {
                 String occurrenceText = content.substring(i, endIndex);
                 //D.d("occurrence text '%s'",occurrenceText);
                 if (!occurrenceText.toLowerCase().equals(label)) {
-                    D.d("tmp=%s",tmp.substring(0,endIndex+100));
-                    throw new IllegalStateException(format("'%s' does not equal to '%s' at index '%s':'%s'", occurrenceText, label,i,endIndex));
+                    Debug.d("tmp=%s", tmp.substring(0, endIndex + 100));
+                    throw new IllegalStateException(format("'%s' does not equal to '%s' at index '%s':'%s'", occurrenceText, label, i, endIndex));
                 }
                 content = new StringBuilder()
                         .append(content.substring(0, i))
@@ -711,31 +712,31 @@ public class StringUtils {
 
     /**
      * Returns the token from the specified index in reverse order. E.g:
-     *
+     * <p/>
      * <p><pre>
      * StringUtils.tokenReverse("This is str",9) = is
      * StringUtils.tokenReverse("Barack Obama is the 44th President",12) = Obama
      * </pre>
      *
-     * @param s the string
+     * @param s   the string
      * @param idx the offset
      * @return token
      */
-    public static String tokenReverse(String s, final int idx){
+    public static String tokenReverse(String s, final int idx) {
         return tokenReverse(new StringBuilder(s), idx);
     }
 
-    public static String tokenReverse(StringBuilder s, final int idx){
+    public static String tokenReverse(StringBuilder s, final int idx) {
         //StringBuilder sb= new StringBuilder();
-        int k=0;
-        for (int i = idx-1; i >= 0; i--) {
+        int k = 0;
+        for (int i = idx - 1; i >= 0; i--) {
             char c = s.charAt(i);
             //System.out.print(c);
-            if(c!=' ')
+            if (c != ' ')
                 k++;
-            else if(c==' ' && k==0)
+            else if (c == ' ' && k == 0)
                 k++;
-            else if(k>0)
+            else if (k > 0)
                 break;
         }
         /*System.out.println();
@@ -745,34 +746,32 @@ public class StringUtils {
     }
 
     /**
-     *
-     *
      * @param s
      * @param idx
      * @return
      */
-    public static String deleteAdj(String s, final int idx){
-        return deleteAdj(new StringBuilder(s),idx).toString();
+    public static String deleteAdj(String s, final int idx) {
+        return deleteAdj(new StringBuilder(s), idx).toString();
     }
 
 
     public static StringBuilder deleteAdjacentTokens(String sb, final String del) {
-        return deleteAdjacentTokens(new StringBuilder(sb),del);
+        return deleteAdjacentTokens(new StringBuilder(sb), del);
     }
 
     public static StringBuilder deleteAdjacentTokens(StringBuilder sb, final String del) {
         int l = del.length();
         int idx;
-        while ((idx=sb.indexOf(del)) > -1) {
-            deleteAdj(sb,idx + l);
+        while ((idx = sb.indexOf(del)) > -1) {
+            deleteAdj(sb, idx + l);
         }
         return sb;
     }
 
-    public static StringBuilder deleteAdj(StringBuilder s, final int idx){
-        for (int i = idx-1; i >= 0; i--) {
+    public static StringBuilder deleteAdj(StringBuilder s, final int idx) {
+        for (int i = idx - 1; i >= 0; i--) {
             char c = s.charAt(i);
-            if(c==' ')break;
+            if (c == ' ') break;
             s.deleteCharAt(i);
         }
         return s;
@@ -780,18 +779,18 @@ public class StringUtils {
 
     /**
      * Removes all the LF (new lines from this string).
-     * 
+     *
      * @param inputStr input string.
      * @return inputStr with all the new lines removed.
      */
     public static String removeLF(String inputStr) {
-    	return inputStr.replaceAll("\n", " ");
+        return inputStr.replaceAll("\n", " ");
     }
 
 
     /**
-     * Removes multi-whitespaces, e.g. "     " results in " ".  
-     *  
+     * Removes multi-whitespaces, e.g. "     " results in " ".
+     *
      * @param inputStr input string.
      * @return inputStr with all the multiple whitespaces normalized into a single whitespace.
      */
@@ -803,15 +802,15 @@ public class StringUtils {
      * Causes to call <tt>{@link #checkNull(String)}</tt>, <tt>{@link #removeLF(String)}</tt> and <tt>{@link #removeMultipleWhitespace(String)}</tt>
      * <br/>
      * i.e., checks for null str, removes LF, and removes multiple whitespaces.
-     * 
+     *
      * @param s the string
      * @return normalized string.
      */
     public static String norm(String s) {
         s = checkNull(s);
-        s=removeLF(s);
+        s = removeLF(s);
         s = removeMultipleWhitespace(s);
-		return s;
+        return s;
     }
 
 
@@ -821,7 +820,6 @@ public class StringUtils {
         }
         return str.toLowerCase();
     }
-
 
 
     public static String join(Iterator iterator, char separator) {
@@ -840,7 +838,6 @@ public class StringUtils {
         }
         return buf.toString();
     }
-
 
 
     public static String[] split(String str, char separatorChar) {
