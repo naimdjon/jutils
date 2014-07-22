@@ -18,11 +18,6 @@ public class Col {
         return retval;
     }
 
-    /**
-     * Creates a new instance of HashMap
-     *
-     * @return new map.
-     */
     public static <K, V> Map<K, V> newMap() {
         return new HashMap<K, V>();
     }
@@ -60,32 +55,16 @@ public class Col {
         return treeMap();
     }
 
-    /**
-     * Constructs an empty <tt>HashMap</tt> with the specified initial
-     * capacity and the default load factor (0.75).
-     *
-     * @param initialcapacity the initial capacity
-     * @return hashmap.
-     */
+
     public static <K, V> HashMap<K, V> newHashMap(int initialcapacity) {
         return new HashMap<K, V>(initialcapacity);
     }
 
-    /**
-     * Creates a new instance of hashtable.
-     *
-     * @return hashtable
-     */
+
     public static <K, V> Hashtable<K, V> newHashtable() {
         return new Hashtable<K, V>();
     }
 
-    /**
-     * Constructs a new set containing the elements in the specified collection.
-     *
-     * @param c the collection whose elements are to be placed into this set.
-     * @return new set
-     */
     public static <E> Set<E> newHashSet(Collection<? extends E> c) {
         return new HashSet<E>(c);
     }
@@ -94,11 +73,6 @@ public class Col {
         return new HashSet<E>();
     }
 
-    /**
-     * Constructs a new set.
-     *
-     * @return new set
-     */
     public static <E> Set<E> newSet() {
         return new HashSet<E>();
     }
@@ -127,23 +101,10 @@ public class Col {
         return new TreeSet<E>();
     }
 
-    /**
-     * Constructs a new, empty set; the backing <tt>HashMap</tt> instance has
-     * the specified initial capacity and default load factor, which is
-     * <tt>0.75</tt>.
-     *
-     * @param initialCapacity the initial capacity of the hash table.
-     * @return new set
-     */
     public static <E> Set<E> newSet(int initialCapacity) {
         return new HashSet<E>(initialCapacity);
     }
 
-    /**
-     * Constructs a new list.
-     *
-     * @return new list
-     */
     public static <E> List<E> newList() {
         return new ArrayList<E>();
     }
@@ -152,11 +113,7 @@ public class Col {
         return new ArrayList<E>(initialCapacity);
     }
 
-    /**
-     * Constructs a new list.
-     *
-     * @return new list
-     */
+
     public static <E> LinkedList<E> linkedList() {
         return new LinkedList<E>();
     }
@@ -169,40 +126,17 @@ public class Col {
         return new LinkedBlockingQueue<E>();
     }
 
-    /**
-     * Constructs and returns a new  vector.
-     *
-     * @return new vector
-     */
+
     public static <E> Vector<E> newVector() {
         return new Vector<E>();
     }
 
-    /**
-     * Returns a synchronized (thread-safe) map backed by the specified
-     * map.  In order to guarantee serial access, it is critical that
-     * <strong>all</strong> access to the backing map is accomplished
-     * through the returned map.<p>
-     * <p/>
-     * </pre>
-     * Failure to follow this advice may result in non-deterministic behavior.
-     * <p/>
-     * <p>The returned map will be serializable if the specified map is
-     * serializable.
-     *
-     * @return a synchronized view of HashMap.
-     */
+
     public static <K, V> Map<K, V> synchronizedMap() {
         return java.util.Collections.synchronizedMap(new HashMap<K, V>());
     }
 
 
-    /**
-     * Checks whether the collection is empty or not. It is safe to call this method on null collection
-     *
-     * @param col collection to be checked
-     * @return true if collection is null or empty,false otherwise.
-     */
     public static <E> boolean empty(Collection<E> col) {
         return col == null || col.isEmpty();
     }
@@ -211,23 +145,12 @@ public class Col {
         return col == null || col.isEmpty();
     }
 
-    /**
-     * Creates a new stack.
-     *
-     * @return new stack.
-     */
+
     public static <E> Stack<E> newStack() {
         return new Stack<E>();
     }
 
-    /**
-     * Creates a new collection of objects from the array of objects.  The instance of
-     * collection is set.
-     *
-     * @param objs objects in the collection
-     * @param <E>  elements in the collection
-     * @return the newly created collection.
-     */
+
     public static <E> Collection<E> toCollection(E... objs) {
         return new HashSet<E>(Arrays.asList(objs));
     }
@@ -295,23 +218,13 @@ public class Col {
         print(c);
     }
 
-    /**
-     * Prints the collection to system out
-     *
-     * @param c
-     */
+
     public static <E> void print(Collection<E> c) {
         for (E e : c)
             System.out.println(e);
     }
 
-    /**
-     * Prints out topK first entries.
-     *
-     * @param c    the collection
-     * @param topK the k head entries to be printed
-     * @param <E>
-     */
+
     public static <E> void print(Collection<E> c, final int topK) {
         int i = 0;
         for (E e : c) {
@@ -325,12 +238,6 @@ public class Col {
             System.out.println(c.get(i));
     }
 
-    /**
-     * Converts the <tt>keyValues</tt> to map. Using the delimeters: "=" and ";"<br/>
-     *
-     * @param keyValues
-     * @return
-     */
     public static Map<String, String> toMapStr(String... keyValues) {
         Map<String, String> retval = newMap();
         for (String keyValue : keyValues) {
@@ -350,21 +257,7 @@ public class Col {
             if (filter.contains(next)) it.remove();
         }
     }
-    /*
-     @SuppressWarnings("rawtypes")
-     public static class ValueComparator<T> implements Comparator<Comparable<T>> {
 
-         private Map base;
-
-         public ValueComparator(Map base) {
-             this.base = base;
-         }
-
-         @SuppressWarnings("unchecked")
-         public int compare(Comparable<T> a, Comparable<T> b) {
-             return a.compareTo((T) b);
-         }
-     }*/
 
 
     public static Map toMap(final Object[] array) {

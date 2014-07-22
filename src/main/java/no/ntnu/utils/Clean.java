@@ -17,8 +17,6 @@ public class Clean {
     };
 
     public static String clean(String token) {
-//        String bef=token;
-//        D.d("token bef:"+bef);
         StringBuilder sb = new StringBuilder(token);
         for (String s : wordsToClean) {
             int idx;

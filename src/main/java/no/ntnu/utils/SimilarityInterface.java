@@ -11,27 +11,7 @@ import static no.ntnu.utils.Clazz.invoke;
 //this class requires secondstring-20060615.jar
 public class SimilarityInterface {
 
-/*
-    public static void main(String[] args) {
-        List<StringOccurrence> dst= newList();
-        dst.add(new StringOccurrence("this is t.est",3));
-        System.out.println("contains: "+dst.contains(new StringOccurrence("this is test",2)));
 
-        final Set<Object> objects = Col.sortedSet();
-        objects.add(new StringOccurrence("test",20));
-        objects.add(new StringOccurrence("jalla",21));
-        objects.add(new StringOccurrence("biggest",90));
-        objects.add(new StringOccurrence("jalla4",21));
-        objects.add(new StringOccurrence("jalla4",21));
-        System.out.println(objects);
-        System.out.println("XXX1:"+computeNGrams("parody","this makes a really good parody of"));
-        System.out.println("XXX2:"+computeNGrams("parody","a really good parody of"));
-        System.out.println("XXX3:"+computeNGrams("parody","a good parody of"));
-        System.out.println("XXX4:"+computeNGrams("parody","a parody of"));
-        System.out.println("XXX5:"+computeNGrams("parody","parody of"));
-        System.out.println("XXX6:"+computeNGrams("parody","a parody"));
-    }
-*/
 
     public static double computeAvg3Sim(String word1, String word2) {
         int cpt = 0;

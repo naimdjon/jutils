@@ -107,23 +107,7 @@ public class XML {
             throw new XPathRuntimeException(se);
         }
         return doc;
-    }/*
-    public static Document getDocFromFile(String filename) throws XPathRuntimeException {
-        Document doc;
-        try {
-            DOMParser parser = new DOMParser();
-            parser.setFeature("http://apache.org/xml/features/validation/dynamic", false);//typically validate on import to make sure content valid against DTD (must set DTD as URL in XML doc)
-            parser.setFeature("http://apache.org/xml/features/validation/schema", false);
-            parser.parse(new InputSource(new FileReader(filename)));
-            doc = parser.getDocument();
-        } catch (SAXException se) {
-            se.printStackTrace();
-            throw new XPathRuntimeException(se);
-        } catch (IOException ioe) {
-            throw new XPathRuntimeException(ioe);
-        }
-        return doc;
-    }*/
+    }
 
     public static void serialize(Document doc, OutputStream out) throws RuntimeException {
         serialize(doc, out, false);

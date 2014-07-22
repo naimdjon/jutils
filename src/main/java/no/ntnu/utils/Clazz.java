@@ -8,13 +8,6 @@ import java.util.Map;
 
 import static java.lang.Class.forName;
 
-/**
- * Created by IntelliJ IDEA.
- * User: takhirov
- * Date: 12/28/11
- * Time: 14:08
- * $Id$
- */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Clazz {
 
